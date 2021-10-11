@@ -7,6 +7,8 @@ namespace Interaction_with_DB
 {
     class SQL
     {
+
+
         public static void SelectUsers()
         {
 
@@ -22,39 +24,43 @@ namespace Interaction_with_DB
 
                 SqlDataReader reader = command.ExecuteReader();
 
+               
 
-                if (reader.HasRows)
+                List<User> users = new List<User>();
+                while (reader.Read())
+                   users.Add(new User() { id = reader.GetValue(0), login = reader.GetValue(1), role = reader.GetValue(2) });
+               
+
+                Console.WriteLine("{0} \t{1} \t{2} ", reader.GetName(0), reader.GetName(1), reader.GetName(2));
+                     foreach (var u in users)
+                Console.WriteLine("{0} \t{1} \t{2}", u.id, u.login, u.role);
+
+
+
+
+
+
+
+            }
+        }
+
+
+            public static void InsertUser()
+            {
+                using (SqlConnection connection = new SqlConnection())
                 {
-                    Console.WriteLine("{0} \t{1} \t{2} ", reader.GetName(0), reader.GetName(1), reader.GetName(2));
+                    connection.ConnectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=db;Integrated Security=True";
 
-                    while (reader.Read())
-                    {
-                        object id = reader.GetValue(0);
-                        object login = reader.GetValue(1);
-                        object role = reader.GetValue(2);
-                        Console.WriteLine("{0} \t{1} \t{2}", id, login, role);
-                    }
+                    connection.Open();
+
+                    SqlCommand insert = new SqlCommand("insert into users (id, login, role) values (4, 'larry', 'superadmin')", connection);
+                    insert.ExecuteNonQuery();
 
                 }
-
-
-
             }
+
         }
 
-        public static void InsertUser()
-        {
-            using (SqlConnection connection = new SqlConnection())
-            {
-                connection.ConnectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=db;Integrated Security=True";
 
-                connection.Open();
-
-                SqlCommand insert = new SqlCommand("insert into users (id, login, role) values (4, 'larry', 'superadmin')", connection);
-                insert.ExecuteNonQuery();
-
-            }
-        }
-
-    }
+    
 }
