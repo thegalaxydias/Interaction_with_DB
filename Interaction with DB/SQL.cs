@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Data.SqlClient;
+using Dapper;
 
 namespace Interaction_with_DB
 {
-    class SQL
+    class SQL 
     {
 
 
@@ -24,18 +25,14 @@ namespace Interaction_with_DB
 
                 SqlDataReader reader = command.ExecuteReader();
 
-               
 
-                List<User> users = new List<User>();
-                while (reader.Read())
-                   users.Add(new User() { id = reader.GetValue(0), login = reader.GetValue(1), role = reader.GetValue(2) });
-               
+
+                List<User> users = reader.Parse<User>().AsList();
+
 
                 Console.WriteLine("{0} \t{1} \t{2} ", reader.GetName(0), reader.GetName(1), reader.GetName(2));
-                     foreach (var u in users)
-                Console.WriteLine("{0} \t{1} \t{2}", u.id, u.login, u.role);
-
-
+                foreach (var u in users)
+                    Console.WriteLine("{0} \t{1} \t{2}", u.id, u.login, u.role);
 
 
 
